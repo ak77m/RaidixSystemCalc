@@ -1,0 +1,63 @@
+#  Name    -     SAS -  FC -  iSCSI - SRP - iSER
+Пусто         :1:1:1:1:1
+SAS 9300-8e   : 1
+SAS 9300-8i   : 1
+SAS 9305-16i  : 1
+SAS 9305-16e  : 1
+SAS 9400-16e  : 1
+SAS 9400-16i  : 1
+SAS 9400-8e   : 1
+SAS 9400-8i   : 1
+SAS 9400-8i8e : 1
+SAS 9405W-16e : 1
+SAS 9405W-16i : 1
+SAS 9500-8i   : 1
+SAS 9500-16i  : 1
+SAS 9500-8e   : 1
+SAS 9500-16e  : 1
+
+QLogic QLE256x 8 Gbit  :: 1
+QLogic QLE266x 16 Gbit :: 1
+QLogic QLE2670 16 Gbit :: 1
+QLogic QLE2672 16 Gbit :: 1
+QLogic QLE2690 16 Gbit :: 1
+QLogic QLE2692 16 Gbit :: 1
+QLogic QLE2694 16 Gbit :: 1
+QLogic QLE2740 32 Gbit :: 1
+QLogic QLE2742 32 Gbit :: 1
+
+X-5 MCX556A-ECAT)         ::: 1 :   : 1
+X-5 MCX556A-EDAT)         ::: 1 : 1 : 1
+X-6 MCX653106A-ECAT-SP    ::: 1 : 1 : 1
+X-6 MCX653106A-HDAT-SP    ::: 1 : 1 : 1
+ConnectX-4 EN             ::: 1 :: 1
+X-5 MCX512A-ACAT          ::: 1 :: 1
+X-5 MCX516A-CCAT          ::: 1 :: 1
+X-5 MCX562A-ACAB          ::: 1 :: 1
+
+
+BCM957414A4142CC          ::: 1
+Intel 82574 series        ::: 1
+Intel 82576 series        ::: 1
+Intel 82577 series        ::: 1
+Intel 82578 series        ::: 1
+Intel 82579 series        ::: 1
+Intel 82580 series        ::: 1
+Intel 82598 series        ::: 1
+Intel 82599 series        ::: 1
+Intel I217 series        ::: 1
+Intel I218 series        ::: 1
+Intel I210               ::: 1
+Intel I225-LM            ::: 1
+Intel I350               ::: 1
+Intel PRO/1000 PF        ::: 1
+Intel PRO/1000 PT        ::: 1
+Intel X520 series        ::: 1
+Intel X540 series        ::: 1
+Intel X550 series        ::: 1
+Intel X710 series        ::: 1
+LREC9804BF-4SFP+_V3      ::: 1
+QLE3442-SR               ::: 1
+QLE8442-SR               ::: 1
+
+

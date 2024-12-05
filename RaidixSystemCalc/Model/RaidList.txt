@@ -1,0 +1,12 @@
+    
+    Gen_RAID0:0:0:0:64:false
+    Gen_RAID10:0:0:0:64:true
+    Gen_RAID5i:0:1:0:64:false
+    Gen_RAID6i:0:2:0:64:false
+    Gen_RAID7.3i:0:3:0:64:false
+  
+    Era_RAID0:1:0:0:64:false
+    Era_RAID10:1:0:0:64:true
+    Era_RAID5:1:1:0:64:false
+    Era_RAID6:1:2:0:64:false
+    Era_RAID7.3:1:3:0:64:false
