@@ -102,6 +102,18 @@ final class CalcManager: ObservableObject {
         return raidLevels
     }
     
+    func minMaxValueCorrection(_ newValue: RaidLevel?, count: Int) -> Int{
+        guard let newValue else { return count}
+        let min = Double(newValue.minDrives)
+        let max = Double(newValue.maxDrives)
+        if Double(count) < min {
+            return Int(min)
+        } else if Double(count) > max {
+            return Int(max)
+        }
+        return count
+    }
+    
     
     
 }

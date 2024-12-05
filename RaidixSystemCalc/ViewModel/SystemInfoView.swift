@@ -40,6 +40,7 @@ struct SystemInfoView: View {
 
                // CacheView
                 MyPickerView(title: newConf.system.description(for: "ssdCache"), selection: $selectedSsdCache, options: ["Нет", "На 1 ноде", "На 2х нодах" ])
+                    .font(.headline)
                 
            Spacer()
         }.padding()

@@ -106,7 +106,7 @@ struct StorageSystem {
                 "sanFunctionality": "Блочный доступ",
                 
                 "iscsiProtocol": "Поддержка iSCSI",
-                "iserProtocol": "Поддержка iSCSI",
+                "iserProtocol": "Поддержка iSER",
                 "fcProtocol": "Поддержка FiberChanel",
                 "srpProtocol": "Поддержка InfiniBand",
                 
@@ -115,15 +115,16 @@ struct StorageSystem {
                 "raid": "Рейд-группы системы",
                 "hbaAdapter": "HBA адаптер",
                 
-                "fcAdapter": "FC адаптер",
-                "ethAdapter": "NAS адаптер",
                 "iscsiAdapter": "iSCSI адаптер",
+                "iserAdapter": "iSER адаптер",
+                "fcAdapter": "FC адаптер",
                 "srpAdapter": "IB адаптер",
+                "ethAdapter": "NAS адаптер",
                 
                 "cpuModel": "Модель процессора",
                 "cpuCores": "Количество ядер процессора",
                 "cpuFrequency": "Частота процессора",
-                "ram": "Оперативная память, вычисляется исходя из количества дисков и рейд-групп"
+                "ram": "Оперативная память системы"
             ]
             return descriptions[key] ?? "Unknown"
         }

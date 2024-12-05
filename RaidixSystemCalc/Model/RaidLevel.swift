@@ -8,7 +8,7 @@
 import Foundation
 
 // Уровень рейда и лимиты
-struct RaidLevel: Identifiable {
+struct RaidLevel: Identifiable, Equatable {
     var id: UUID = UUID()
     var name : String
     var raidEngine : Int // 0 - Generic, 1 - ERA

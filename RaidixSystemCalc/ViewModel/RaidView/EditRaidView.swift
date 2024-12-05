@@ -7,19 +7,26 @@
 
 import SwiftUI
 
+//var id: UUID
+//var driveCount: Int // Количество дисков в группе
+//var capacity: Int // Емкость 1 диска
+//var driveType: Int // 1 - HDD, 2 - SSD
+//var raidLevel: RaidLevel
+
 struct EditRaidView: View {
     @EnvironmentObject var newConf: CalcManager
     
-    @Binding var raidItem: RaidItem?
-    @Binding var raidSystems: [RaidItem]
+    @Binding var raidItem: RaidItem? // Выбранный или создаваемый рейд. Передается из RaidView
+    @Binding var raidSystems: [RaidItem]    // Передается из RaidView. Cписок рейдов
+    @State private var selectedRaidLevel: RaidLevel? = nil  // Выбранный рейд
     
     @Environment(\.presentationMode) private var presentationMode
     
-    @State private var diskCount: String = ""
-    @State private var capacity: String = ""
+    @State private var diskCount: Int = 0
+    @State private var capacity: Double = 0.5
     
-    @State private var raidLevel: String = "Не выбран"
-    @State private var selectedRaidLevel: RaidLevel? = nil
+    @State private var raidLevel: String = "Пусто"
+    
     @State private var selectedDriveType: Int = 1
     
     // Для отображения списка рейдов
@@ -27,6 +34,13 @@ struct EditRaidView: View {
         newConf.raidLevels.map { $0.name }
     }
     
+    var minValue: Double {
+        Double(selectedRaidLevel?.minDrives ?? 0)
+    }
+
+    var maxValue: Double {
+        Double(selectedRaidLevel?.maxDrives ?? 1)
+    }
     
     var body: some View {
         NavigationView {
@@ -37,9 +51,10 @@ struct EditRaidView: View {
                         updateSelectedRaidLevel(for: newValue)
                     }
                     .pickerStyle(MenuPickerStyle()) // Стилизация пикера
-                Text("Минимум дисков  \(selectedRaidLevel?.minDrives ?? 0)")
-                Text("Максимум дисков \(selectedRaidLevel?.maxDrives ?? 0)")
-                Text("Избыточность    \(selectedRaidLevel?.countDrivesRedundancy ?? 0)")
+                
+                Text("Минимум дисков  \(selectedRaidLevel?.minDrives ?? 0)").font(.footnote)
+                Text("Максимум дисков \(selectedRaidLevel?.maxDrives ?? 0)").font(.footnote)
+                Text("Избыточность    \(selectedRaidLevel?.countDrivesRedundancy ?? 0)").font(.footnote)
                 
                 
                 
@@ -52,16 +67,39 @@ struct EditRaidView: View {
 //                            //newConf.system.systemType = (newValue == 2)
 //                        }
                     
+                    Text("Общая емкость RAID \(String(format: "%.1f", (capacity * Double(diskCount)))) Тб")
+                 
+                    // Отображаем и меняем количество дисков в рейде
+                    Text("Дисков в RAID:  \(diskCount) шт.")
+                    Slider(
+                        value: Binding(
+                            get: { Double(diskCount) },
+                            set: { diskCount = Int($0) }
+                        ),
+                        in: minValue...maxValue,
+                        step: 1
+                    )
                     
-                    TextField("Количество дисков", text: $diskCount)
-                    // .keyboardType(.numberPad)
-                    TextField("Емкость (ТБ)", text: $capacity)
-                    // .keyboardType(.numberPad)
-                    //TextField("Уровень RAID", text: $raidLevel)
+                    .onChange(of: selectedRaidLevel) { _ , newValue in
+                        diskCount = newConf.minMaxValueCorrection(newValue, count: diskCount)
+
+                    }
                     
                     
+                    // Отображаем и меняем емкость 1 диска
+                    Text("Емкость 1 диска \(String(format: "%.1f", capacity)) Тб")
+                    Slider(
+                        value: $capacity,
+                        in: 0.0...30.0,
+                        step: 0.2
+                    )
+                   
+                    
+                
+                  
                     
                 }
+                .disabled(maxValue < 64)
                 
                 
                 
@@ -80,8 +118,8 @@ struct EditRaidView: View {
                     Button("Сохранить") {
                         let newRaidSystem = RaidItem(
                             id: raidItem?.id ?? UUID(),
-                            diskCount: Int(diskCount) ?? 0,
-                            capacity: Int(capacity) ?? 0,
+                            diskCount: diskCount,
+                            capacity: Double(capacity),
                             driveType: selectedDriveType,
                             raidLevel: RaidLevel(name: raidLevel)
                         )
@@ -99,8 +137,8 @@ struct EditRaidView: View {
         .padding()
         .onAppear {
             if let raidSystem = raidItem {
-                diskCount = String(raidSystem.driveCount)
-                capacity = String(raidSystem.capacity)
+                diskCount = raidSystem.driveCount
+                capacity = Double(raidSystem.capacity)
                 raidLevel = raidSystem.raidLevel.name
             }
         }

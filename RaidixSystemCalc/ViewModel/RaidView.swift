@@ -36,7 +36,7 @@ struct RaidView: View {
                                 Text(raid.raidLevel.name)
                                 Spacer()
                                 Text("\(raid.driveCount) x ")
-                                Text("\(raid.capacity) ТБ")
+                                Text("\(String(format: "%.1f", raid.capacity)) ТБ")
                             }
                             .onTapGesture {
                                 selectedRaidSystem = raid

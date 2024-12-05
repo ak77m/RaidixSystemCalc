@@ -9,50 +9,68 @@ import SwiftUI
 
 struct SanView: View {
     @EnvironmentObject var newConf: CalcManager
-    @State private var selectedSanAdapter: Int = 1
-    @State private var selectedIscsiProtocol = "Пусто"
     
+    @State private var selectedIscsiAdapter = "Пусто"
+    @State private var selectedIserAdapter = "Пусто"
+    @State private var selectedFcAdapter = "Пусто"
+    @State private var selectedSrpAdapter = "Пусто"
     var body: some View {
         
-        Toggle(isOn: $newConf.system.sanFunctionality) {
-            Text(newConf.system.description(for: "sanFunctionality"))
-                .font(.headline)
-        }
-        
-        if newConf.system.sanFunctionality {
-            
-            VStack(alignment: .leading){
-                // iSCSI
-                Toggle(isOn: $newConf.system.iscsiProtocol) {
-                    Text(newConf.system.description(for: "iscsiProtocol"))
-                }
-                if newConf.system.iscsiProtocol {
-                    MyPickerView(title: newConf.system.description(for: "iscsiAdapter") ,
-                                 selection: $selectedIscsiProtocol,
-                                 options: newConf.iscsi)
-                }
-                
-                // iSER
-                Toggle(isOn: $newConf.system.iserProtocol) {
-                    Text(newConf.system.description(for: "iserProtocol"))
-                }
-                
-                // FC
-                Toggle(isOn: $newConf.system.fcProtocol) {
-                    Text(newConf.system.description(for: "fcProtocol"))
-                }
-                
-                
-                // SRP
-                Toggle(isOn: $newConf.system.srpProtocol) {
-                    Text(newConf.system.description(for: "srpProtocol"))
-                }
-                
-                
+            Toggle(isOn: $newConf.system.sanFunctionality) {
+                Text(newConf.system.description(for: "sanFunctionality"))
+                    .font(.headline)
             }
-            
-            .padding(.leading)
+        VStack {
+            if newConf.system.sanFunctionality {
+                
+                VStack(alignment: .leading){
+                    // iSCSI
+                    Toggle(isOn: $newConf.system.iscsiProtocol) {
+                        Text(newConf.system.description(for: "iscsiProtocol"))
+                    }
+                    if newConf.system.iscsiProtocol {
+                        MyPickerView(title: newConf.system.description(for: "iscsiAdapter") ,
+                                     selection: $selectedIscsiAdapter,
+                                     options: newConf.iscsi).padding(.leading)
+                    }
+                    
+                    // iSER
+                    Toggle(isOn: $newConf.system.iserProtocol) {
+                        Text(newConf.system.description(for: "iserProtocol"))
+                    }
+                    if newConf.system.iserProtocol {
+                        MyPickerView(title: newConf.system.description(for: "iserAdapter") ,
+                                     selection: $selectedIserAdapter,
+                                     options: newConf.iser).padding(.leading)
+                    }
+                    
+                    // FC
+                    Toggle(isOn: $newConf.system.fcProtocol) {
+                        Text(newConf.system.description(for: "fcProtocol"))
+                    }
+                    if newConf.system.fcProtocol {
+                        MyPickerView(title: newConf.system.description(for: "fcAdapter") ,
+                                     selection: $selectedFcAdapter,
+                                     options: newConf.fc).padding(.leading)
+                    }
+                    
+                    
+                    // SRP
+                    Toggle(isOn: $newConf.system.srpProtocol) {
+                        Text(newConf.system.description(for: "srpProtocol"))
+                    }
+                    if newConf.system.srpProtocol {
+                        MyPickerView(title: newConf.system.description(for: "srpAdapter") ,
+                                     selection: $selectedSrpAdapter,
+                                     options: newConf.srp).padding(.leading)
+                    }
+                    
+                    
+                }
+            }
         }
+        .padding(.leading)
+        
     }
 }
 

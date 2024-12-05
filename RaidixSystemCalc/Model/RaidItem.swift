@@ -13,7 +13,7 @@ import Foundation
 struct RaidItem: Identifiable {
     var id: UUID
     var driveCount: Int // Количество дисков в группе
-    var capacity: Int // Емкость 1 диска
+    var capacity: Double // Емкость 1 диска
     var driveType: Int // 1 - HDD, 2 - SSD
     var raidLevel: RaidLevel
     
@@ -22,19 +22,19 @@ struct RaidItem: Identifiable {
         max(0, driveCount - raidLevel.countDrivesRedundancy) // Количество дисков под данные = Кол-во дисков минус избыточность | но <0 быть не может
     }
     
-    var totalCapacity: Int {
-        max(0, driveCount * capacity) // Общая емкость = кол-во дисков * емкость | но <0 быть не может
+    var totalCapacity: Double {
+        max(0, Double(driveCount) * capacity) // Общая емкость = кол-во дисков * емкость | но <0 быть не может
     }
     
-    var effectiveCapacity: Int {
-        max(0, (driveCount - raidLevel.countDrivesRedundancy) * capacity) // Эффективная емкость = диски под данные * емкость | но <0 быть не может
+    var effectiveCapacity: Double {
+        max(0, Double((driveCount - raidLevel.countDrivesRedundancy)) * capacity) // Эффективная емкость = диски под данные * емкость | но <0 быть не может
     }
     
  
     init(
             id: UUID = UUID(),
             diskCount: Int = 0,
-            capacity: Int = 0,
+            capacity: Double = 0.0,
             driveType: Int = 0,
             raidLevel: RaidLevel = RaidLevel()
         ) {
