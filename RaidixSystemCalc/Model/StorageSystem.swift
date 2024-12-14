@@ -11,110 +11,74 @@ import Foundation
 /// Основная структура с базовыми переменными
 struct StorageSystem {
     // Основные параметры
-    var systemType: Bool // Тип системы, SC - false или DC - true
-    var sanFunctionality: Bool // Блочный доступ (true, false)
-    var nasFunctionality: Bool // Файловый доступ (true, false)
-    
-    var synchronization: String // Протокол используемый для синхронизации (iscsi, iser, srp)
-    var synchroAdapter: String // Адаптер для синхронизации (берется из справочника [String])
-    
-    var iscsiProtocol: Bool // Использование iSCSI (true, false)
-    var iserProtocol: Bool // Использование iSER (true, false)
-    var fcProtocol: Bool // Использование FiberChanel (true, false)
-    var srpProtocol: Bool // Использование InfinBand (true, false)
-    
-    var ssdCache: Int // Размер кэша SSD (1, 2)
-    var raidsInSystem: [RaidItem] // Рейд-группы системы
-    
-    var hbaAdapter: String // HBA адаптер (берется из справочника [String])
-    
-    var fcAdapter: String // FC-адаптер (берется из справочника [String])
-    var ethAdapter: String // Eth адаптер (берется из справочника [String])
-    var iscsiAdapter: String // iSCSI адаптер (берется из справочника [String])
-    var srpAdapter: String // IB адаптер (берется из справочника [String])
-    
-    // TODO
-    var cpuModel: String // Модель CPU (берется из справочника [String])
-    var cpuCores: String // Количество ядер CPU (берется из справочника [String])
-    var cpuFrequency: String // Частота CPU (берется из справочника [String])
-    var ram: String // Оперативная память (вычисляется исходя из кол-ва дисков и рейд-групп)
 
+    var systemType: Bool = false
+    var sanFunctionality: Bool = false
+    var nasFunctionality: Bool = false
+    var synchronization: String = "iscsi"
+    var iscsiProtocol: Bool = false
+    var iserProtocol: Bool = false
+    var fcProtocol: Bool = false
+    var srpProtocol: Bool = false
+    var ssdCache: Int = 1
+    var raidsInSystem: [RaidItem] = []
+    var hbaAdapter: String = "Пусто"
+    var synchroAdapter: String = "Пусто"
+    var iscsiAdapter: String = "Пусто"
+    var iserAdapter: String = "Пусто"
+    var fcAdapter: String = "Пусто"
+    var srpAdapter: String = "Пусто"
+    var ethAdapter: String = "Пусто"
+    var cpuModel: String = "Default CPU Model"
+    var cpuCores: String = "4 cores"
+    var cpuFrequency: String = "2.0 GHz"
+    var ram: String = "8 GB"
     
-    //
-    // Вычисляемая переменная - Всего дисков в системе
-        var totalDriveCount: Int {
-            raidsInSystem.reduce(0) { $0 + $1.driveCount }
-        }
+// Вычисляемые переменные
     
+    // Всего дисков в системе
+    var totalDriveCount: Int {
+        raidsInSystem.reduce(0) { $0 + $1.driveCount }
+    }
     
-    init(
-            systemType: Bool = false,
-            sanFunctionality: Bool = false,
-            nasFunctionality: Bool = false,
-            synchronization: String = "iscsi",
-            iscsiProtocol: Bool = false,
-            iserProtocol: Bool = false,
-            fcProtocol: Bool = false,
-            srpProtocol: Bool = false,
-            ssdCache: Int = 1,
-            raidsInSystem: [RaidItem] = [],
-            hbaAdapter: String = "",
-            synchroAdapter: String = "",
-            fcAdapter: String = "",
-            ethAdapter: String = "",
-            iscsiAdapter: String = "",
-            srpAdapter: String = "",
-            cpuModel: String = "Default CPU Model",
-            cpuCores: String = "4 cores",
-            cpuFrequency: String = "2.0 GHz",
-            ram: String = "8 GB"
-        ) {
-            self.systemType = systemType
-            self.sanFunctionality = sanFunctionality
-            self.nasFunctionality = nasFunctionality
-            self.synchronization = synchronization
-            self.iscsiProtocol = iscsiProtocol
-            self.iserProtocol = iserProtocol
-            self.fcProtocol = fcProtocol
-            self.srpProtocol = srpProtocol
-            self.ssdCache = ssdCache
-            self.raidsInSystem = raidsInSystem
-            self.hbaAdapter = hbaAdapter
-            self.synchroAdapter = synchroAdapter
-            self.fcAdapter = fcAdapter
-            self.ethAdapter = ethAdapter
-            self.iscsiAdapter = iscsiAdapter
-            self.srpAdapter = srpAdapter
-            self.cpuModel = cpuModel
-            self.cpuCores = cpuCores
-            self.cpuFrequency = cpuFrequency
-            self.ram = ram
-        }
+    // Общая емкость
+    var totalCapacity: Double {
+        raidsInSystem.reduce(0) { $0 + $1.totalCapacity }
+    }
+    
+    // Эффективная емкость Тб
+    var effectiveCapacity: Double {
+        raidsInSystem.reduce(0) { $0 + $1.effectiveCapacity }
+    }
+    
+    // Всего SSD дисков  
+    var ssdDrives: Int {
+        raidsInSystem.reduce(0) { $0 + ($1.driveType == "SSD" ? $1.driveCount : 0) }
+    }
+    var hddDrives: Int {
+        raidsInSystem.reduce(0) { $0 + ($1.driveType == "HDD" ? $1.driveCount : 0) }
+    }
+    
+    var DriveCountOutOfRange: Bool { // проверяем выход за пределы лимита дисков. 132 нужно вынести в справочник переменных
+        return totalDriveCount > 132
+    }
+    
 
+// Текстовые дескрипторы
     func description(for key: String) -> String {
             let descriptions = [
                 "systemType": "Тип системы: SC или DC",
-                
                 "synchronization": "Протокол синхронизации",
-              
                 "synchroAdapter": "Адаптер для синхронизации",
-                
-                
                 "nasFunctionality": "Файловый доступ",
-                
-               //
                 "sanFunctionality": "Блочный доступ",
-                
                 "iscsiProtocol": "Поддержка iSCSI",
                 "iserProtocol": "Поддержка iSER",
                 "fcProtocol": "Поддержка FiberChanel",
                 "srpProtocol": "Поддержка InfiniBand",
-                
-                
                 "ssdCache": "SSD-кэш на контролерах",
                 "raid": "Рейд-группы системы",
                 "hbaAdapter": "HBA адаптер",
-                
                 "iscsiAdapter": "iSCSI адаптер",
                 "iserAdapter": "iSER адаптер",
                 "fcAdapter": "FC адаптер",

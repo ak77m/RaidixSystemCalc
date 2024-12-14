@@ -11,23 +11,23 @@ import SwiftData
 struct SystemInfoView: View {
     @EnvironmentObject var newConf: CalcManager
    
-    @State private var selectedSystemType: Int = 1 // Промежуточное значение для Picker-a
+  //  @State private var selectedSystemType: Int = 1 // Промежуточное значение для Picker-a
     @State private var selectedSsdCache: String = "Нет" // Промежуточное значение для Picker-a
-  
+  //  @State private var selectedSasAdapter: String = "Нет" // Промежуточное значение для Picker-a
+    
     //@State private var selectedNasAdapter: Int = 1 // Промежуточное значение для Picker-a
     
     var body: some View {
        
             VStack(alignment: .leading){
                 
-                Picker(selection: $selectedSystemType, label: Text("")) {
-                    Text("Один контроллер").tag(1)
-                    Text("Два контроллера").tag(2)
-                    
+                // Выбор типа системы
+                Picker(selection: $newConf.system.systemType, label: Text("")) {
+                    Text("Один контроллер").tag(false)
+                    Text("Два контроллера").tag(true)
                 }.pickerStyle(.segmented)
-                    .onChange(of: selectedSystemType) { _, newValue in
-                        newConf.system.systemType = (newValue == 2)
-                    }
+
+                
                 // Выбор протокола синхронизации и адаптера
                 SynchroView()
                 
@@ -39,7 +39,15 @@ struct SystemInfoView: View {
                 NasView()
 
                // CacheView
-                MyPickerView(title: newConf.system.description(for: "ssdCache"), selection: $selectedSsdCache, options: ["Нет", "На 1 ноде", "На 2х нодах" ])
+                MyPickerView(title: newConf.system.description(for: "ssdCache"),
+                             selection: $selectedSsdCache,
+                             arrayForSelect: ["Нет", "На 1 ноде", "На 2х нодах" ])
+                    .font(.headline)
+                
+                // HBA
+                MyPickerView(title: newConf.system.description(for: "hbaAdapter"),
+                             selection: $newConf.system.hbaAdapter,
+                             arrayForSelect: newConf.sas)
                     .font(.headline)
                 
            Spacer()

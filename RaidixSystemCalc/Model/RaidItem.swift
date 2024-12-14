@@ -8,42 +8,34 @@
 import Foundation
 
 
-/// Структура для описания Рейд-групп системы
+/// Структура для описания каждого рейда системы
 
 struct RaidItem: Identifiable {
-    var id: UUID
-    var driveCount: Int // Количество дисков в группе
-    var capacity: Double // Емкость 1 диска
-    var driveType: Int // 1 - HDD, 2 - SSD
-    var raidLevel: RaidLevel
+    var id: UUID = UUID()
+    var driveCount: Int = 0 // Количество дисков в группе
+    var capacity: Double = 0.0 // Емкость 1 диска
+    var driveType: String = "HDD" // "HDD", "SSD"
+    var raidLevel: RaidLevel = RaidLevel()
+    
     
     // Вычисляемые переменные
-    var driveForData: Int {
-        max(0, driveCount - raidLevel.countDrivesRedundancy) // Количество дисков под данные = Кол-во дисков минус избыточность | но <0 быть не может
+    var driveForData: Int {  // Количество дисков под данные = Кол-во дисков минус избыточность | но <0 быть не может
+        max(0, driveCount - raidLevel.countDrivesRedundancy)
     }
     
-    var totalCapacity: Double {
-        max(0, Double(driveCount) * capacity) // Общая емкость = кол-во дисков * емкость | но <0 быть не может
+    var totalCapacity: Double { // Общая емкость = кол-во дисков * емкость
+        Double(driveCount) * capacity
     }
     
-    var effectiveCapacity: Double {
-        max(0, Double((driveCount - raidLevel.countDrivesRedundancy)) * capacity) // Эффективная емкость = диски под данные * емкость | но <0 быть не может
+    var effectiveCapacity: Double { // Эффективная емкость = диски под данные * емкость | но <0 быть не может
+        max(0, Double((driveCount - raidLevel.countDrivesRedundancy)) * capacity)
+    }
+   
+    var raidEngineIsOptimal: Bool { // Проверяем используется ли оптимальное сочетание движка и типа диска
+        (driveType == "HDD" && !raidLevel.raidEngine) ||
+        (driveType == "SSD" && raidLevel.raidEngine)
     }
     
- 
-    init(
-            id: UUID = UUID(),
-            diskCount: Int = 0,
-            capacity: Double = 0.0,
-            driveType: Int = 0,
-            raidLevel: RaidLevel = RaidLevel()
-        ) {
-            self.id = id
-            self.driveCount = diskCount
-            self.capacity = capacity
-            self.driveType = driveType
-            self.raidLevel = raidLevel
-        }
     
     static func descriptions() -> [String: String] {
         return [

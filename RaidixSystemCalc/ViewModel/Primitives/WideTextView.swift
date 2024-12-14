@@ -8,11 +8,18 @@
 import SwiftUI
 
 struct WideTextView: View {
+    let disription: String
+    let value: String
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        HStack {
+            Text(disription)
+            Spacer()
+            Text(value).fontWeight(.bold)
+            
+        }
     }
 }
 
 #Preview {
-    WideTextView()
+    WideTextView(disription: "Описание", value: "Значение")
 }

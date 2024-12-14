@@ -8,75 +8,66 @@
 import SwiftUI
 
 struct RaidView: View {
-        @EnvironmentObject var newConf: CalcManager
+    @EnvironmentObject var newConf: CalcManager
     
-      //  @State private var raidsInSystem: [RaidItem] = []
-        @State private var isPresentingEditView = false
-        @State private var selectedRaidSystem: RaidItem? = nil
-
-        var body: some View {
-            NavigationView {
-                VStack{
-                    Section() {
-                        HStack(alignment: .top){
-                            VStack(alignment: .leading){
-                                Text("Общая емкость системы: ")
-                                Text("Эффективная емкость системы:")
-                                Text("Всего дисков: \(newConf.system.totalDriveCount) шт")
-                                Text("их них SSD:")
-                                Text("их них HDD:")
-                            }
-                            Spacer()
-                        }
-                    }.padding(.horizontal)
-                    
-                    List {
-                        ForEach(newConf.system.raidsInSystem) { raid in
-                            HStack {
-                                Text(raid.raidLevel.name)
-                                Spacer()
-                                Text("\(raid.driveCount) x ")
-                                Text("\(String(format: "%.1f", raid.capacity)) ТБ")
-                            }
+    @State private var isPresentingEditView = false
+    @State private var selectedRaidItem: RaidItem? = nil
+    
+    var body: some View {
+        NavigationView {
+            VStack{
+                RaidTotalInfoView()
+                
+                List {
+                    ForEach(newConf.system.raidsInSystem) { raid in
+                        RaidItemListView(item: raid)
                             .onTapGesture {
-                                selectedRaidSystem = raid
+                                selectedRaidItem = raid
                                 isPresentingEditView = true
                             }
-                        }
-                        .onDelete { indices in
-                            newConf.system.raidsInSystem.remove(atOffsets: indices)
+                    }
+                    .onDelete { indices in
+                        newConf.system.raidsInSystem.remove(atOffsets: indices)
+                    }
+                }
+                .navigationTitle("RAIDы системы")
+                .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button(action: {
+                            selectedRaidItem = nil
+                            isPresentingEditView = true
+                        }) {
+                            Label("Добавить", systemImage: "plus")
                         }
                     }
-                    .navigationTitle("RAIDы системы")
-                    .toolbar {
-                        ToolbarItem(placement: .primaryAction) {
-                            Button(action: {
-                                selectedRaidSystem = nil
-                                isPresentingEditView = true
-                            }) {
-                                Label("Добавить", systemImage: "plus")
-                            }
+                }
+                .sheet(isPresented: $isPresentingEditView) {
+                    EditRaidView(raidItem: Binding(
+                        get: { selectedRaidItem ?? RaidItem() },  // Передаем не `nil`, а новый объект по умолчанию
+                        set: { newValue in
+                            selectedRaidItem = newValue
                         }
-                    }
-                    .sheet(isPresented: $isPresentingEditView) {
-                        EditRaidView(raidItem: $selectedRaidSystem, raidSystems: $newConf.system.raidsInSystem)
-                    }
+                    ))
                     
-                    NavigationLink(destination: SystemInfoView()) {
-                        Text("Перейти дальше")
-                            .font(.headline)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
-                    }
-                    .padding()
-                }//.frame(minWidth: 500, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+                    // , raidSystems: $newConf.system.raidsInSystem
+                }
                 
-                
+                NavigationLink(destination: SystemInfoView()) {
+                    Text("Перейти дальше")
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                }
+                .padding()
             }
+            
+            
+            
         }
+    }
 }
 
 #Preview {

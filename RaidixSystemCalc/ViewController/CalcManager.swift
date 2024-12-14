@@ -61,6 +61,16 @@ final class CalcManager: ObservableObject {
             }
         }
     
+    func saveRaidItem(_ raidItem: RaidItem) {
+        // raidSystems: $newConf.system.raidsInSystem)
+        
+        if let index = system.raidsInSystem.firstIndex(where: { $0.id == raidItem.id }) {
+            system.raidsInSystem[index] = raidItem
+        } else {
+            system.raidsInSystem.append(raidItem)
+        }
+    }
+    
     func parseRaidLevels(from fileName: String) -> [RaidLevel] {
         var raidLevels: [RaidLevel] = []
 
@@ -80,7 +90,7 @@ final class CalcManager: ObservableObject {
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
 
             if components.count == 6,
-               let raidEngine = Int(components[1]),
+               let raidEngine = Bool(components[1]),
                let countDrivesRedundancy = Int(components[2]),
                let minDrives = Int(components[3]),
                let maxDrives = Int(components[4]),

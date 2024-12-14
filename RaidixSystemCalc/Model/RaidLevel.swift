@@ -10,33 +10,22 @@ import Foundation
 // Уровень рейда и лимиты
 struct RaidLevel: Identifiable, Equatable {
     var id: UUID = UUID()
-    var name : String
-    var raidEngine : Int // 0 - Generic, 1 - ERA
-    var countDrivesRedundancy : Int  // Кол-во дисков отводящихся под избыточность
-    var minDrives : Int
-    var maxDrives : Int = 64
-    var evenNumber : Bool // требуется четное количество
+    var name : String = "Пусто"         // Название рейда
+    var raidEngine : Bool = false       // false - Generic, true - ERA
+    var countDrivesRedundancy : Int = 0 // Кол-во дисков отводящихся под избыточность
+    var minDrives : Int = 0             // Минимальное кол-во дисков в рейде
+    var maxDrives : Int = 1             // Максимальное кол-во дисков в рейде
+    var evenNumber : Bool = false       // требуется четное количество
     
     var systemNameString : String {
         switch raidEngine {
-        case 0:
+        case false:
             return "Generic"
-        case 1:
+        case true:
             return "Era"
-        default:
-            return "Generic"
+        
         }
     }
-    
-    
-    init(name: String = "n/a", raidEngine: Int = 0, countDrivesRedundancy: Int = 0, minDrives: Int = 0, maxDrives: Int = 64,  evenNumber: Bool = false) {
-        self.name = name
-        self.raidEngine = raidEngine
-        self.countDrivesRedundancy = countDrivesRedundancy
-        self.minDrives = minDrives
-        self.maxDrives = maxDrives
-        self.evenNumber = evenNumber
-    }
-    
+ 
 }
 

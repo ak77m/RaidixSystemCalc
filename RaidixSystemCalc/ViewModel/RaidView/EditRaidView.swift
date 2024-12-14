@@ -7,107 +7,109 @@
 
 import SwiftUI
 
-//var id: UUID
-//var driveCount: Int // Количество дисков в группе
-//var capacity: Int // Емкость 1 диска
-//var driveType: Int // 1 - HDD, 2 - SSD
 //var raidLevel: RaidLevel
 
 struct EditRaidView: View {
+    @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var newConf: CalcManager
     
-    @Binding var raidItem: RaidItem? // Выбранный или создаваемый рейд. Передается из RaidView
-    @Binding var raidSystems: [RaidItem]    // Передается из RaidView. Cписок рейдов
-    @State private var selectedRaidLevel: RaidLevel? = nil  // Выбранный рейд
+    @Binding var raidItem: RaidItem // Выбранный или создаваемый рейд. Передается из RaidView
     
-    @Environment(\.presentationMode) private var presentationMode
-    
-    @State private var diskCount: Int = 0
-    @State private var capacity: Double = 0.5
-    
-    @State private var raidLevel: String = "Пусто"
-    
-    @State private var selectedDriveType: Int = 1
     
     // Для отображения списка рейдов
     var raidNames: [String] {
         newConf.raidLevels.map { $0.name }
     }
-    
+
     var minValue: Double {
-        Double(selectedRaidLevel?.minDrives ?? 0)
+        Double(raidItem.raidLevel.minDrives)
     }
 
     var maxValue: Double {
-        Double(selectedRaidLevel?.maxDrives ?? 1)
+        Double(raidItem.raidLevel.maxDrives) // не = 0 иначе Slider вывалится с ошибкой
     }
     
     var body: some View {
         NavigationView {
             
             VStack(alignment: .leading){
-                MyPickerView(title: "Уровень RAID", selection: $raidLevel, options: raidNames)
-                    .onChange(of: raidLevel) { _, newValue in
+                MyPickerView(title: "Уровень RAID", selection: $raidItem.raidLevel.name, arrayForSelect: raidNames)
+                    .onChange(of: raidItem.raidLevel.name) { _, newValue in
                         updateSelectedRaidLevel(for: newValue)
+                       
                     }
+                    
                     .pickerStyle(MenuPickerStyle()) // Стилизация пикера
                 
-                Text("Минимум дисков  \(selectedRaidLevel?.minDrives ?? 0)").font(.footnote)
-                Text("Максимум дисков \(selectedRaidLevel?.maxDrives ?? 0)").font(.footnote)
-                Text("Избыточность    \(selectedRaidLevel?.countDrivesRedundancy ?? 0)").font(.footnote)
+                Text("Минимум дисков  \(raidItem.raidLevel.minDrives)").font(.footnote)
+                Text("Максимум дисков \(raidItem.raidLevel.maxDrives)").font(.footnote)
+                Text("Избыточность    \(raidItem.raidLevel.countDrivesRedundancy)").font(.footnote)
                 
-                
+                Divider()
+
+                Text("Общая емкость RAID \(String(format: "%.1f", raidItem.totalCapacity)) Тб")
+                Text("Емкость под данные \(String(format: "%.1f", raidItem.effectiveCapacity)) Тб").font(.footnote)
+                Text("Диски под данные  \(raidItem.driveForData) шт").font(.footnote)
                 
                 Form {
-                    Picker(selection: $selectedDriveType, label: Text("")) {
-                        Text("HDD").tag(1)
-                        Text("SSD").tag(2)
+                    Picker(selection: $raidItem.driveType, label: Text("")) {
+                        Text("HDD").tag("HDD")
+                        Text("SSD").tag("SSD")
                     }.pickerStyle(.segmented)
-//                        .onChange(of: selectedDriveType) { _, newValue in
-//                            //newConf.system.systemType = (newValue == 2)
-//                        }
+                                   .background(raidItem.raidEngineIsOptimal ? Color(.systemBackground) : Color.red)
+                                   .cornerRadius(8) // Закругленные углы для более приятного вида
+                                   .animation(.easeInOut, value: !raidItem.raidEngineIsOptimal) // Анимация изменения цвета
                     
-                    Text("Общая емкость RAID \(String(format: "%.1f", (capacity * Double(diskCount)))) Тб")
-                 
+                    
+                    //    .background(raidItem.raidEngineIsOptimal ? . : .red)
+                    //.foregroundColor(raidItem.raidEngineIsOptimal ? .primary : .red )
+                    
                     // Отображаем и меняем количество дисков в рейде
-                    Text("Дисков в RAID:  \(diskCount) шт.")
+                    Text("Дисков в RAID:  \(raidItem.driveCount) шт.").font(.footnote)
                     Slider(
                         value: Binding(
-                            get: { Double(diskCount) },
-                            set: { diskCount = Int($0) }
+                            get: { Double(raidItem.driveCount) },
+                            set: { raidItem.driveCount = Int($0) }
                         ),
                         in: minValue...maxValue,
                         step: 1
                     )
                     
-                    .onChange(of: selectedRaidLevel) { _ , newValue in
-                        diskCount = newConf.minMaxValueCorrection(newValue, count: diskCount)
+                    .onChange(of: raidItem.raidLevel) { _ , newValue in
+                        raidItem.driveCount = newConf.minMaxValueCorrection(newValue, count: raidItem.driveCount)
 
                     }
                     
                     
                     // Отображаем и меняем емкость 1 диска
-                    Text("Емкость 1 диска \(String(format: "%.1f", capacity)) Тб")
+                    Text("Емкость 1 диска \(String(format: "%.1f", raidItem.capacity)) Тб")
                     Slider(
-                        value: $capacity,
+                        value: Binding(
+                              get: { raidItem.capacity},
+                              set: { newValue in
+                                  raidItem.capacity = newValue
+                              }
+                              ),
                         in: 0.0...30.0,
                         step: 0.2
                     )
-                   
-                    
-                
-                  
-                    
                 }
+                
+                Button(action: {
+                    // Дублируем рейд, но с новым UUID
+                    var NewItemindex = raidItem
+                    NewItemindex.id = UUID()
+                    newConf.saveRaidItem(NewItemindex)
+                    
+                }) {
+                    Label("Дублировать RAID", systemImage: "plus")
+                }
+               
                 .disabled(maxValue < 64)
-                
-                
-                
-                
-            }
+            }.padding(.horizontal)
             
-            
-            .navigationTitle(raidItem == nil ? "Добавить RAID" : "Изменить RAID")
+            .navigationTitle("Добавить/изменить RAID")
+            //.navigationTitle(raidItem == nil ? "Добавить RAID" : "Изменить RAID")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Отмена") {
@@ -116,39 +118,27 @@ struct EditRaidView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Сохранить") {
-                        let newRaidSystem = RaidItem(
-                            id: raidItem?.id ?? UUID(),
-                            diskCount: diskCount,
-                            capacity: Double(capacity),
-                            driveType: selectedDriveType,
-                            raidLevel: RaidLevel(name: raidLevel)
-                        )
-                        
-                        if let index = raidSystems.firstIndex(where: { $0.id == raidItem?.id }) {
-                            raidSystems[index] = newRaidSystem
-                        } else {
-                            raidSystems.append(newRaidSystem)
-                        }
+                        newConf.saveRaidItem(raidItem)
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
             }
         }
-        .padding()
+        .padding(.horizontal)
         .onAppear {
-            if let raidSystem = raidItem {
-                diskCount = raidSystem.driveCount
-                capacity = Double(raidSystem.capacity)
-                raidLevel = raidSystem.raidLevel.name
-            }
+           // raidLevelName = raidItem.raidLevel.name
         }
+        //.frame(minWidth: 500, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         
     }
     private func updateSelectedRaidLevel(for name: String) {
-        selectedRaidLevel =  newConf.raidLevels.first { $0.name == name }
+        raidItem.raidLevel =  newConf.raidLevels.first { $0.name == name } ?? RaidLevel()
+        raidItem.driveType = raidItem.raidLevel.raidEngine ? "SSD" : "HDD"
+        //raidItem.raidLevel = selectedRaidLevel ?? RaidLevel()
+        
     }
 }
 
-//#Preview {
+//#Preview {b
 //    EditRaidView()
 //}

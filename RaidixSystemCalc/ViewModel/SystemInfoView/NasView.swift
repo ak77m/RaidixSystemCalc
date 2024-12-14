@@ -24,11 +24,11 @@ struct NasView: View {
                 MyPickerView(
                     title: newConf.system.description(for: "ethAdapter"),
                     selection: $selectedNasAdapter,
-                    options: newConf.iscsi  // адаптеры одинаковы
+                    arrayForSelect: newConf.iscsi  // адаптеры одинаковы
                 )
                 .onChange(of: selectedNasAdapter) { _, newValue in
                     newConf.system.ethAdapter = newValue
-                }
+                }.padding(.leading)
                 
             }
         }

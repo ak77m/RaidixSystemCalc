@@ -12,7 +12,6 @@ struct SynchroView: View {
     
     @State private var selectedSynhroProtocol: String = "iSCSI" // Промежуточное значение для Picker-a
     @State private var currentOptions: [String] = []  // Данные для второго Picker
-    @State private var selectedAdapter: String = ""
     
     var body: some View {
         // Если система 2х контроллерная
@@ -23,7 +22,7 @@ struct SynchroView: View {
                 MyPickerView(
                                title: newConf.system.description(for: "synchronization"),
                                selection: $selectedSynhroProtocol,
-                               options: ["iSCSI", "iSER", "SRP" ]
+                               arrayForSelect: ["iSCSI", "iSER", "SRP" ]
                            )
                 .onChange(of: selectedSynhroProtocol) { _, newValue in
                     updateOptions(for: newValue)
@@ -32,12 +31,9 @@ struct SynchroView: View {
                 // Выбираем адаптер синхры
                 MyPickerView(
                                title: newConf.system.description(for: "synchroAdapter"),
-                               selection: $selectedAdapter,
-                               options: currentOptions
+                               selection: $newConf.system.synchroAdapter,
+                               arrayForSelect: currentOptions
                            )
-                .onChange(of: selectedAdapter) { _, newValue in
-                    newConf.system.synchroAdapter = newValue
-                }
 
               
             }
@@ -61,22 +57,9 @@ struct SynchroView: View {
            }
            
            // Устанавливаем выбранный адаптер в первый элемент массива или пустую строку
-           selectedAdapter = currentOptions.first ?? "Пусто"
+           newConf.system.synchroAdapter = currentOptions.first ?? "Пусто"
        }
-    
-//    // Обновление массива данных для второго Picker
-//       private func updateOptions(for protocolTag: Int) {
-//           switch protocolTag {
-//           case 1: currentOptions = newConf.iscsi
-//           case 2: currentOptions = newConf.iser
-//           case 3: currentOptions = newConf.srp
-//           default: currentOptions = []
-//           }
-//           
-//           // Устанавливаем выбранный адаптер в первый элемент массива или пустую строку
-//           selectedAdapter = currentOptions.first ?? "Пусто"
-//       }
-  
+ 
 }
 
 #Preview {

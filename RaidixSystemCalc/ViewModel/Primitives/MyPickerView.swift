@@ -11,15 +11,15 @@ import SwiftUI
 struct MyPickerView: View {
     let title: String
     @Binding var selection: String
-    let options: [String]
+    let arrayForSelect: [String]
 
     var body: some View {
         HStack (alignment: .center) {
             Text(title)
             Spacer()
             Picker(selection: $selection, label: Text("")) {
-                ForEach(options, id: \.self) { option in
-                    Text(option).tag(option)
+                ForEach(arrayForSelect, id: \.self) { item in
+                    Text(item).tag(item)
                 }
             }
 #if os(iOS)

@@ -24,14 +24,16 @@ struct SanView: View {
             if newConf.system.sanFunctionality {
                 
                 VStack(alignment: .leading){
+                    
                     // iSCSI
                     Toggle(isOn: $newConf.system.iscsiProtocol) {
                         Text(newConf.system.description(for: "iscsiProtocol"))
                     }
                     if newConf.system.iscsiProtocol {
                         MyPickerView(title: newConf.system.description(for: "iscsiAdapter") ,
-                                     selection: $selectedIscsiAdapter,
-                                     options: newConf.iscsi).padding(.leading)
+                                     selection: $newConf.system.iscsiAdapter,
+                                    // selection: $selectedIscsiAdapter,
+                                     arrayForSelect: newConf.iscsi).padding(.leading)
                     }
                     
                     // iSER
@@ -40,8 +42,9 @@ struct SanView: View {
                     }
                     if newConf.system.iserProtocol {
                         MyPickerView(title: newConf.system.description(for: "iserAdapter") ,
-                                     selection: $selectedIserAdapter,
-                                     options: newConf.iser).padding(.leading)
+                                     selection: $newConf.system.iserAdapter,
+                                     //selection: $selectedIserAdapter,
+                                     arrayForSelect: newConf.iser).padding(.leading)
                     }
                     
                     // FC
@@ -51,7 +54,7 @@ struct SanView: View {
                     if newConf.system.fcProtocol {
                         MyPickerView(title: newConf.system.description(for: "fcAdapter") ,
                                      selection: $selectedFcAdapter,
-                                     options: newConf.fc).padding(.leading)
+                                     arrayForSelect: newConf.fc).padding(.leading)
                     }
                     
                     
@@ -62,7 +65,7 @@ struct SanView: View {
                     if newConf.system.srpProtocol {
                         MyPickerView(title: newConf.system.description(for: "srpAdapter") ,
                                      selection: $selectedSrpAdapter,
-                                     options: newConf.srp).padding(.leading)
+                                     arrayForSelect: newConf.srp).padding(.leading)
                     }
                     
                     
