@@ -10,7 +10,6 @@ import SwiftUI
 struct SynchroView: View {
     @EnvironmentObject var newConf: CalcManager
     
-    @State private var selectedSynhroProtocol: String = "iSCSI" // Промежуточное значение для Picker-a
     @State private var currentOptions: [String] = []  // Данные для второго Picker
     
     var body: some View {
@@ -21,11 +20,13 @@ struct SynchroView: View {
                 // Выбираем протокол синхры
                 MyPickerView(
                                title: newConf.system.description(for: "synchronization"),
-                               selection: $selectedSynhroProtocol,
+                               selection: $newConf.system.synchronization,
                                arrayForSelect: ["iSCSI", "iSER", "SRP" ]
                            )
-                .onChange(of: selectedSynhroProtocol) { _, newValue in
+                .onChange(of: newConf.system.synchronization) { _, newValue in
                     updateOptions(for: newValue)
+                    // Устанавливаем выбранный адаптер в первый элемент массива или пустую строку
+                    newConf.system.synchroAdapter = currentOptions.first ?? "Пусто"
                 }
   
                 // Выбираем адаптер синхры
@@ -39,7 +40,9 @@ struct SynchroView: View {
             }
             .padding(.leading)
             .onAppear {
-                updateOptions(for: selectedSynhroProtocol)
+                updateOptions(for: newConf.system.synchronization)
+                // Обновляем список адаптеров только если он пустой
+               // if currentOptions == [] { updateOptions(for: newConf.system.synchronization) }
             }
         }
         
@@ -56,9 +59,11 @@ struct SynchroView: View {
            default: currentOptions = []
            }
            
-           // Устанавливаем выбранный адаптер в первый элемент массива или пустую строку
-           newConf.system.synchroAdapter = currentOptions.first ?? "Пусто"
+          
+           
+          
        }
+    
  
 }
 

@@ -19,22 +19,32 @@ struct RaidItem: Identifiable {
     
     
     // Вычисляемые переменные
-    var driveForData: Int {  // Количество дисков под данные = Кол-во дисков минус избыточность | но <0 быть не может
+    
+    // Количество дисков под данные = Кол-во дисков минус избыточность | но <0 быть не может
+    var driveForData: Int {
         max(0, driveCount - raidLevel.countDrivesRedundancy)
     }
-    
-    var totalCapacity: Double { // Общая емкость = кол-во дисков * емкость
+    // Общая емкость = кол-во дисков * емкость
+    var totalCapacity: Double {
         Double(driveCount) * capacity
     }
     
-    var effectiveCapacity: Double { // Эффективная емкость = диски под данные * емкость | но <0 быть не может
+    // Эффективная емкость = диски под данные * емкость | но <0 быть не может
+    var effectiveCapacity: Double {
         max(0, Double((driveCount - raidLevel.countDrivesRedundancy)) * capacity)
     }
-   
-    var raidEngineIsOptimal: Bool { // Проверяем используется ли оптимальное сочетание движка и типа диска
+    
+    // Проверяем используется ли оптимальное сочетание движка и типа диска
+    var raidEngineIsOptimal: Bool {
         (driveType == "HDD" && !raidLevel.raidEngine) ||
         (driveType == "SSD" && raidLevel.raidEngine)
     }
+    
+    // Для RAID с Era Engine = 1, Generic = 0
+    var RaidWithEra: Int {
+        raidLevel.raidEngine ? 1 : 0
+    }
+    
     
     
     static func descriptions() -> [String: String] {

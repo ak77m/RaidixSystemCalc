@@ -10,16 +10,17 @@ import SwiftUI
 struct SanView: View {
     @EnvironmentObject var newConf: CalcManager
     
-    @State private var selectedIscsiAdapter = "Пусто"
-    @State private var selectedIserAdapter = "Пусто"
-    @State private var selectedFcAdapter = "Пусто"
-    @State private var selectedSrpAdapter = "Пусто"
+//    @State private var selectedIscsiAdapter = "Пусто"
+//    @State private var selectedIserAdapter = "Пусто"
+//    @State private var selectedFcAdapter = "Пусто"
+//    @State private var selectedSrpAdapter = "Пусто"
     var body: some View {
         
             Toggle(isOn: $newConf.system.sanFunctionality) {
                 Text(newConf.system.description(for: "sanFunctionality"))
                     .font(.headline)
-            }
+            }.tint(.blue)
+        
         VStack {
             if newConf.system.sanFunctionality {
                 
@@ -32,7 +33,6 @@ struct SanView: View {
                     if newConf.system.iscsiProtocol {
                         MyPickerView(title: newConf.system.description(for: "iscsiAdapter") ,
                                      selection: $newConf.system.iscsiAdapter,
-                                    // selection: $selectedIscsiAdapter,
                                      arrayForSelect: newConf.iscsi).padding(.leading)
                     }
                     
@@ -43,7 +43,6 @@ struct SanView: View {
                     if newConf.system.iserProtocol {
                         MyPickerView(title: newConf.system.description(for: "iserAdapter") ,
                                      selection: $newConf.system.iserAdapter,
-                                     //selection: $selectedIserAdapter,
                                      arrayForSelect: newConf.iser).padding(.leading)
                     }
                     
@@ -53,7 +52,7 @@ struct SanView: View {
                     }
                     if newConf.system.fcProtocol {
                         MyPickerView(title: newConf.system.description(for: "fcAdapter") ,
-                                     selection: $selectedFcAdapter,
+                                     selection: $newConf.system.fcAdapter,
                                      arrayForSelect: newConf.fc).padding(.leading)
                     }
                     
@@ -64,7 +63,7 @@ struct SanView: View {
                     }
                     if newConf.system.srpProtocol {
                         MyPickerView(title: newConf.system.description(for: "srpAdapter") ,
-                                     selection: $selectedSrpAdapter,
+                                     selection: $newConf.system.srpAdapter,
                                      arrayForSelect: newConf.srp).padding(.leading)
                     }
                     

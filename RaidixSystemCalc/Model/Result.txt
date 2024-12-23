@@ -1,0 +1,14 @@
+;Рекомендации к аппаратной платформе;
+;Процессор;cpuModel
+;Оперативная память;ram
+;Общая информация о СХД;
+;Общая емкость системы хранения, ТБ;totalCapacity
+;Эффективная емкость, ТБ;effectiveCapacity
+;Количество дисков в системе;totalDriveCount + ssdCache * 2
+;из них HDD;hddDrives
+;  из них SSD;ssdDrives
+;  из них SSD для кэш;totalCapacity
+;Функциональность;
+systemType == false;Одноконтроллерная система;
+systemType == true;Двухконтроллерная система;
+systemType == true;Протокол синхронизации;synchronization

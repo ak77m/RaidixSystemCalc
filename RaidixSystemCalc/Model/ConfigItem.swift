@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+struct ConfigItem {
+    let condition: String
+    let description: String
+    let value: String
+}

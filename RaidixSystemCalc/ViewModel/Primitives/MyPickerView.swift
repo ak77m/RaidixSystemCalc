@@ -12,7 +12,7 @@ struct MyPickerView: View {
     let title: String
     @Binding var selection: String
     let arrayForSelect: [String]
-
+    
     var body: some View {
         HStack (alignment: .center) {
             Text(title)

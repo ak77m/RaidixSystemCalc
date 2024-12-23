@@ -9,7 +9,7 @@ import SwiftUI
 
 struct NasView: View {
     @EnvironmentObject var newConf: CalcManager
-    @State private var selectedNasAdapter: String = "Пусто"  // значение для Picker-a
+   // @State private var selectedNasAdapter: String = "Пусто"  // значение для Picker-a
     
     var body: some View {
         // NAS
@@ -17,18 +17,15 @@ struct NasView: View {
             Toggle(isOn: $newConf.system.nasFunctionality) {
                 Text(newConf.system.description(for: "nasFunctionality"))
                     .font(.headline)
-            }
+            }.tint(.blue)
             
             if newConf.system.nasFunctionality {
                 
                 MyPickerView(
                     title: newConf.system.description(for: "ethAdapter"),
-                    selection: $selectedNasAdapter,
+                    selection: $newConf.system.ethAdapter,
                     arrayForSelect: newConf.iscsi  // адаптеры одинаковы
-                )
-                .onChange(of: selectedNasAdapter) { _, newValue in
-                    newConf.system.ethAdapter = newValue
-                }.padding(.leading)
+                ).padding(.leading)
                 
             }
         }
