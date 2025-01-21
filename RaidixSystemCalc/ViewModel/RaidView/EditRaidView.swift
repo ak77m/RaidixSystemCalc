@@ -7,10 +7,19 @@
 
 import SwiftUI
 
-//var raidLevel: RaidLevel
+extension Color {
+    static var platformBackground: Color {
+        #if os(iOS)
+        return Color(.systemBackground)
+        #elseif os(macOS)
+        return Color(.windowBackgroundColor)
+        #endif
+    }
+}
 
 struct EditRaidView: View {
-    @Environment(\.presentationMode) private var presentationMode
+   // @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var newConf: CalcManager
     
     @Binding var raidItem: RaidItem // Выбранный или создаваемый рейд. Передается из RaidView
@@ -56,13 +65,10 @@ struct EditRaidView: View {
                         Text("HDD").tag("HDD")
                         Text("SSD").tag("SSD")
                     }.pickerStyle(.segmented)
-                                   .background(raidItem.raidEngineIsOptimal ? Color(.systemBackground) : Color.red)
+                        .background(raidItem.raidEngineIsOptimal ? Color.platformBackground : Color.red)
                                    .cornerRadius(8) // Закругленные углы для более приятного вида
                                    .animation(.easeInOut, value: !raidItem.raidEngineIsOptimal) // Анимация изменения цвета
                     
-                    
-                    //    .background(raidItem.raidEngineIsOptimal ? . : .red)
-                    //.foregroundColor(raidItem.raidEngineIsOptimal ? .primary : .red )
                     
                     // Отображаем и меняем количество дисков в рейде
                     Text("Дисков в RAID:  \(raidItem.driveCount) шт.").font(.footnote)
@@ -94,47 +100,51 @@ struct EditRaidView: View {
                         step: 0.2
                     )
                 }
+                Spacer()
                 
                 Button(action: {
-                    // Дублируем рейд, но с новым UUID
-                    var NewItemindex = raidItem
-                    NewItemindex.id = UUID()
-                    newConf.saveRaidItem(NewItemindex)
-                    
+                    newConf.saveDoubleItem(raidItem)
                 }) {
                     Label("Дублировать RAID", systemImage: "plus")
                 }
                
                 .disabled(maxValue < 64)
-            }.padding(.horizontal)
+            }
+            .onAppear {
+                        // Устанавливаем размер окна для macOS
+                        #if os(macOS)
+                        if let window = NSApplication.shared.windows.first {
+                            window.setContentSize(NSSize(width: 600, height: 800)) // Установить размер окна
+                            window.center() // Центрируем окно на экране
+                        }
+                        #endif
+                    }
+            .padding(.horizontal)
             
             .navigationTitle("Добавить/изменить RAID")
             //.navigationTitle(raidItem == nil ? "Добавить RAID" : "Изменить RAID")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Отмена") {
-                        presentationMode.wrappedValue.dismiss()
+                        dismiss()
+                       // presentationMode.wrappedValue.dismiss()
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Сохранить") {
                         newConf.saveRaidItem(raidItem)
-                        presentationMode.wrappedValue.dismiss()
+                        dismiss()
+                        //presentationMode.wrappedValue.dismiss()
                     }
                 }
             }
         }
         .padding(.horizontal)
-        .onAppear {
-           // raidLevelName = raidItem.raidLevel.name
-        }
-        //.frame(minWidth: 500, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-        
+       
     }
     private func updateSelectedRaidLevel(for name: String) {
         raidItem.raidLevel =  newConf.raidLevels.first { $0.name == name } ?? RaidLevel()
         raidItem.driveType = raidItem.raidLevel.raidEngine ? "SSD" : "HDD"
-        //raidItem.raidLevel = selectedRaidLevel ?? RaidLevel()
         
     }
 }

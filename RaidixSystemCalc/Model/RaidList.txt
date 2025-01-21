@@ -5,7 +5,7 @@
     RAID6i     :false:2:5:64:false
     RAID7.3i   :false:3:6:64:false
     Era_RAID0  :true:0:0:64:false
-    Era_RAID1  :true:0:2:64:true
+    Era_RAID1  :true:0:2:2:true
     Era_RAID10 :true:0:4:64:true
     Era_RAID5  :true:1:4:64:false
     Era_RAID6  :true:2:4:64:false

@@ -49,11 +49,12 @@ struct SystemInfoView: View {
                     .font(.headline)
                     .padding()
                     .frame(maxWidth: .infinity)
-                    .background(Color.blue)
+                    .background(!(newConf.system.sanFunctionality || newConf.system.nasFunctionality) ? Color.gray : Color.blue)
+                    
                     .foregroundColor(.white)
                     .cornerRadius(8)
             }
-            
+            .disabled(!(newConf.system.sanFunctionality || newConf.system.nasFunctionality))
         }.padding()
         
     }

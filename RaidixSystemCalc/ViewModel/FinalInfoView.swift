@@ -49,28 +49,31 @@ struct FinalInfoView: View {
                     }
                 }
             }
-            
-            //            Button(action: {
-            //                resultProvider.exportToCSV(system: newConf.system, fileName: "FinalReport")
-            //            }) {
-            //                Text("Export to CSV")
-            //                    .padding()
-            //                    .background(Color.blue)
-            //                    .foregroundColor(.white)
-            //                    .cornerRadius(8)
-            //            }
+      
         }
         .navigationTitle("Финальный отчет")
-            .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button(action: {
-                                resultProvider.exportToCSV(system: newConf.system, fileName: "FinalReport")
-                            }) {
-                                Image(systemName: "square.and.arrow.up")
-                                    .font(.title2)
-                            }
-                        }
-                    }
+        .toolbar {
+#if os(iOS)
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    resultProvider.exportToCSV(system: newConf.system, fileName: "FinalReport")
+                }) {
+                    Image(systemName: "square.and.arrow.up")
+                        .font(.title2)
+                }
+            }
+#elseif os(macOS)
+            ToolbarItem {
+                Button(action: {
+                    resultProvider.exportToCSV(system: newConf.system, fileName: "FinalReport")
+                }) {
+                    Image(systemName: "square.and.arrow.up")
+                        .font(.title2)
+                }
+                .help("Экспортировать в CSV") // Всплывающая подсказка для macOS
+            }
+#endif
+        }
         
     }
 }

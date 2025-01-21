@@ -57,10 +57,11 @@ struct RaidView: View {
                         .font(.headline)
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.blue)
+                        .background(newConf.system.raidsInSystem.isEmpty ? Color.gray : Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(8)
                 }
+                .disabled(newConf.system.raidsInSystem.isEmpty)
                 .padding()
             }
             
