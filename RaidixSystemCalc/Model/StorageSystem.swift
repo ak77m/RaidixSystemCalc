@@ -73,8 +73,8 @@ struct StorageSystem {
     
     // количество оперативной памяти
     var ram: Int {
-        //  8ГБ на ОС + Generic: кол-во дисков * 0.5ГБ + количество рейдов с Era * 4ГБ + 20ГБ при использовании NAS
-        let calculatedRam = 8 + Int(Double(hddDrives) * 0.5) + raidsInSystem.reduce(0) { $0 + $1.RaidWithEra * 4 } + (nasFunctionality ? 20 : 0)
+        //  8ГБ на ОС + Generic: кол-во дисков * 0.5ГБ + количество рейдов с Era * 4ГБ + 40ГБ при использовании NAS
+        let calculatedRam = 8 + Int(Double(hddDrives) * 0.5) + raidsInSystem.reduce(0) { $0 + $1.RaidWithEra * 4 } + (nasFunctionality ? 40 : 0)
        
         // Округление вверх до ближайшего кратного 16
         let roundedRam = (calculatedRam % 16 == 0) ? calculatedRam : ((calculatedRam / 16) + 1) * 16

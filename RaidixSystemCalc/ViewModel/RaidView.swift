@@ -20,7 +20,20 @@ struct RaidView: View {
                 
                 List {
                     ForEach(newConf.system.raidsInSystem) { raid in
-                        RaidItemListView(item: raid)
+                        HStack{
+                            RaidItemListView(item: raid).contentShape(Rectangle())
+                            Button(action: {
+                                newConf.saveDoubleItem(raid)
+                            }) {
+                                Image(systemName: "doc.on.doc") // Пиктограмма дублирования
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 24, height: 24) // Устанавливаем размер пиктограммы
+                                    .foregroundColor(.blue)
+                                    .padding(8) // Добавляем отступы для области нажатия
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
                             .onTapGesture {
                                 selectedRaidItem = raid
                                 isPresentingEditView = true
@@ -32,14 +45,26 @@ struct RaidView: View {
                 }
                 .navigationTitle("RAIDы системы")
                 .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        Button(action: {
-                            selectedRaidItem = nil
-                            isPresentingEditView = true
-                        }) {
-                            Label("Добавить", systemImage: "plus")
+                    ToolbarItem(placement: .principal ) { //.primaryAction
+                        HStack {
+                            Button(action: {
+                                newConf.system = StorageSystem()
+                            }) {
+                                Text("Очистить")
+                            }
+                            
+                            Spacer() // Отделяет кнопки друг от друга
+                            
+                            Button(action: {
+                                selectedRaidItem = nil
+                                isPresentingEditView = true
+                            }) {
+                                Text("+ RAID")
+                                // Label("Добавить", systemImage: "plus")
+                            }
                         }
                     }
+                    
                 }
                 .sheet(isPresented: $isPresentingEditView) {
                     EditRaidView(raidItem: Binding(

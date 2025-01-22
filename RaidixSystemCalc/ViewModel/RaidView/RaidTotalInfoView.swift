@@ -15,9 +15,9 @@ struct RaidTotalInfoView: View {
         Section() {
             HStack(alignment: .top){
                 VStack(alignment: .leading){
-                    WideTextView(disription: "Общая емкость, Тб:",
+                    WideTextView(disription: "Общая емкость, ТБ:",
                                  value: String(format: "%.1f", newConf.system.totalCapacity))
-                    WideTextView(disription: "Эффективная емкость, Тб: ",
+                    WideTextView(disription: "Эффективная емкость, ТБ: ",
                                  value: String(format: "%.1f", newConf.system.effectiveCapacity))
                     
                     Divider()

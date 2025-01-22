@@ -78,7 +78,7 @@ struct EditRaidView: View {
                             set: { raidItem.driveCount = Int($0) }
                         ),
                         in: minValue...maxValue,
-                        step: 1
+                        step: raidItem.raidLevel.evenNumber ? 2 : 1 // Если рейд зеркальный то только четный выбор
                     )
                     
                     .onChange(of: raidItem.raidLevel) { _ , newValue in
@@ -101,14 +101,8 @@ struct EditRaidView: View {
                     )
                 }
                 Spacer()
-                
-                Button(action: {
-                    newConf.saveDoubleItem(raidItem)
-                }) {
-                    Label("Дублировать RAID", systemImage: "plus")
-                }
-               
-                .disabled(maxValue < 64)
+            
+
             }
             .onAppear {
                         // Устанавливаем размер окна для macOS

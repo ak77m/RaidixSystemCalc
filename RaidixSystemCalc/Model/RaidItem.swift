@@ -21,9 +21,11 @@ struct RaidItem: Identifiable {
     // Вычисляемые переменные
     
     // Количество дисков под данные = Кол-во дисков минус избыточность | но <0 быть не может
+    // Если рейд зеркальный то /2 | но <0 быть не может // driveCount / 2
     var driveForData: Int {
-        max(0, driveCount - raidLevel.countDrivesRedundancy)
+        raidLevel.evenNumber ? max(0, driveCount / 2) : max(0, driveCount - raidLevel.countDrivesRedundancy)
     }
+    
     // Общая емкость = кол-во дисков * емкость
     var totalCapacity: Double {
         Double(driveCount) * capacity
@@ -31,7 +33,7 @@ struct RaidItem: Identifiable {
     
     // Эффективная емкость = диски под данные * емкость | но <0 быть не может
     var effectiveCapacity: Double {
-        max(0, Double((driveCount - raidLevel.countDrivesRedundancy)) * capacity)
+        max(0, Double(driveForData) * capacity)
     }
     
     // Проверяем используется ли оптимальное сочетание движка и типа диска
