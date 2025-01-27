@@ -22,9 +22,11 @@ struct RaidItemListView: View {
             Text(item.raidLevel.name)
                 .padding(.horizontal)
                 .font(.footnote)
-                //.lineLimit(1)
+                .lineLimit(1)
+                .fixedSize()
             
             Spacer()
+            
             Text("\(item.driveCount) x")
             Text("\(String(format: "%.1f", item.capacity)) ТБ")
         }

@@ -56,6 +56,7 @@ struct StorageSystem {
     var ssdDrives: Int {
         raidsInSystem.reduce(0) { $0 + ($1.driveType == "SSD" ? $1.driveCount : 0) }
     }
+    
     // Всего HDD дисков
     var hddDrives: Int {
         raidsInSystem.reduce(0) { $0 + ($1.driveType == "HDD" ? $1.driveCount : 0) }
@@ -71,10 +72,20 @@ struct StorageSystem {
         (totalDriveCount > 48) || (ssdDrives > 12)  || (ssdDrives > 10 && hddDrives > 24)
     }
     
+    // количество RAID на Era
+    var raidsWithEraEngine: Int {
+        return raidsInSystem.reduce(0) { $0 + $1.raidEngineInt}
+    }
+    
+    // количество RAID на Generic
+    var raidsWithGenericEngine: Int {
+        raidsInSystem.count - raidsWithEraEngine
+    }
+    
     // количество оперативной памяти
     var ram: Int {
         //  8ГБ на ОС + Generic: кол-во дисков * 0.5ГБ + количество рейдов с Era * 4ГБ + 40ГБ при использовании NAS
-        let calculatedRam = 8 + Int(Double(hddDrives) * 0.5) + raidsInSystem.reduce(0) { $0 + $1.RaidWithEra * 4 } + (nasFunctionality ? 40 : 0)
+        let calculatedRam = 8 + Int(Double(hddDrives) * 0.5) + ( raidsWithEraEngine * 4 )  + (nasFunctionality ? 40 : 0)
        
         // Округление вверх до ближайшего кратного 16
         let roundedRam = (calculatedRam % 16 == 0) ? calculatedRam : ((calculatedRam / 16) + 1) * 16
@@ -83,6 +94,7 @@ struct StorageSystem {
         return max(roundedRam, 32)
     }
     
+   
 
 // Текстовые дескрипторы
     func description(for key: String) -> String {

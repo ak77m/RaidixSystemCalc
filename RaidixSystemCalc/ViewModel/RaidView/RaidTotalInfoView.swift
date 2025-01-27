@@ -29,6 +29,12 @@ struct RaidTotalInfoView: View {
                         Text("их них HDD: \(newConf.system.hddDrives)").font(.footnote)
                     }.padding(.leading)
                     
+ //                   Divider()
+//                    VStack(alignment: .leading) {
+//                        Text("Era Engine: \(newConf.system.raidsWithEraEngine)").font(.footnote)
+//                        Text("Gen Engine: \(newConf.system.raidsWithGenericEngine)").font(.footnote)
+//                    }.padding(.leading)
+                    
                 }
                 Spacer()
             }

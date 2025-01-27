@@ -45,26 +45,22 @@ struct RaidView: View {
                 }
                 .navigationTitle("RAIDы системы")
                 .toolbar {
-                    ToolbarItem(placement: .principal ) { //.primaryAction
-                        HStack {
-                            Button(action: {
-                                newConf.system = StorageSystem()
-                            }) {
-                                Text("Очистить")
-                            }
-                            
-                            Spacer() // Отделяет кнопки друг от друга
-                            
-                            Button(action: {
-                                selectedRaidItem = nil
-                                isPresentingEditView = true
-                            }) {
-                                Text("+ RAID")
-                                // Label("Добавить", systemImage: "plus")
-                            }
+                    ToolbarItemGroup(placement: .navigationBarLeading) {
+                        Button(action: {
+                            newConf.system = StorageSystem()
+                        }) {
+                            Text("Очистить")
                         }
                     }
                     
+                    ToolbarItemGroup(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            selectedRaidItem = nil
+                            isPresentingEditView = true
+                        }) {
+                            Text("+ RAID")
+                        }
+                    }
                 }
                 .sheet(isPresented: $isPresentingEditView) {
                     EditRaidView(raidItem: Binding(

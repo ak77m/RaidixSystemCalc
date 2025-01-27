@@ -13,7 +13,7 @@ import Foundation
 struct RaidItem: Identifiable {
     var id: UUID = UUID()
     var driveCount: Int = 0 // Количество дисков в группе
-    var capacity: Double = 0.0 // Емкость 1 диска
+    var capacity: Double = 10.0 // Емкость 1 диска
     var driveType: String = "HDD" // "HDD", "SSD"
     var raidLevel: RaidLevel = RaidLevel()
     
@@ -42,8 +42,8 @@ struct RaidItem: Identifiable {
         (driveType == "SSD" && raidLevel.raidEngine)
     }
     
-    // Для RAID с Era Engine = 1, Generic = 0
-    var RaidWithEra: Int {
+    // Для счетчика количества RAID. Era Engine = 1, Generic = 0
+    var raidEngineInt: Int {
         raidLevel.raidEngine ? 1 : 0
     }
     

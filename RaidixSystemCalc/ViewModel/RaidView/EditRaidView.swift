@@ -52,7 +52,8 @@ struct EditRaidView: View {
                 
                 Text("Минимум дисков  \(raidItem.raidLevel.minDrives)").font(.footnote)
                 Text("Максимум дисков \(raidItem.raidLevel.maxDrives)").font(.footnote)
-                Text("Избыточность    \(raidItem.raidLevel.countDrivesRedundancy)").font(.footnote)
+                Text("Избыточность    \(raidItem.raidLevel.evenNumber ? raidItem.driveCount / 2 : raidItem.raidLevel.countDrivesRedundancy)").font(.footnote)
+                
                 
                 Divider()
 
