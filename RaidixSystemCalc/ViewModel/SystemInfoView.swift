@@ -17,8 +17,8 @@ struct SystemInfoView: View {
             
             // Выбор типа системы
             Picker(selection: $newConf.system.systemType, label: Text("")) {
-                Text("Один контроллер").tag(false)
-                Text("Два контроллера").tag(true)
+                Text("(SC) один контроллер").tag(false)
+                Text("(DC) два контроллера").tag(true)
             }.pickerStyle(.segmented)
             
             
